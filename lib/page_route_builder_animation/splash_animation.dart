@@ -22,19 +22,7 @@ class _SplashAnimationState extends State<SplashAnimation> with SingleTickerProv
     controller.addListener(() {
       if (controller.isCompleted) {
         Navigator.of(context).push(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) {
-              return const Destination();
-            },
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              final tween = Tween(begin: const Offset(0, -1), end: Offset.zero)
-                  .animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut));
-              return SlideTransition(
-                position: tween,
-                child: child,
-              );
-            },
-          ),
+          MyCustomRouteTransition(route: const Destination()),
         );
 
         Timer(const Duration(milliseconds: 500), () {
@@ -51,7 +39,6 @@ class _SplashAnimationState extends State<SplashAnimation> with SingleTickerProv
         child: GestureDetector(
           onTap: () {
             controller.forward();
-            // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Destination()));
           },
           child: ScaleTransition(
             scale: scaleAnimation,
@@ -88,4 +75,23 @@ class Destination extends StatelessWidget {
       ),
     );
   }
+}
+
+class MyCustomRouteTransition extends PageRouteBuilder {
+  final Widget route;
+
+  MyCustomRouteTransition({required this.route})
+      : super(
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return route;
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final tween = Tween(begin: const Offset(0, -1), end: Offset.zero)
+                .animate(CurvedAnimation(parent: animation, curve: Curves.easeInOut));
+            return SlideTransition(
+              position: tween,
+              child: child,
+            );
+          },
+        );
 }
